@@ -7,6 +7,7 @@ const express = require('express');
 const authRoutes = require('./routes/auth');
 const bookRoutes = require('./routes/book');
 const userRoutes = require('./routes/user');
+const MongoStore = require('connect-mongo');
 
 
 async function startInMemoryMongoDB() {
@@ -20,22 +21,27 @@ async function startInMemoryMongoDB() {
 }
 
 
+
 async function main(){
+    await mongoose.connect("mongodb://root:secret@localhost:27017/simple_library?authSource=admin", {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    });
+
     const server = express();
-    await startInMemoryMongoDB()
+    server.use(express.json());
+
+    server.use(session({
+        secret: 'secret',
+        resave: false,
+        saveUninitialized: true,
+        cookie: { maxAge: 86400000 },
+        store: MongoStore.create({mongoUrl: mongoose.connection.client.s.url } )
+    }));
 
     server.use('/auth', authRoutes);
     server.use('/books', bookRoutes);
     server.use('/user', userRoutes);
-
-
-
-    exports.initializeSession = session({
-        secret: 'secret',
-        resave: false,
-        saveUninitialized: false,
-        cookie: { maxAge: 86400000 } // 1 day
-    });
 
     server.listen(3000, () => {
         console.log(`Server started`);

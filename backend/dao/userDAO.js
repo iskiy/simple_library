@@ -10,7 +10,7 @@ exports.createUser = async (user) => {
 
 exports.getUserByUsername = async (username) => {
     try {
-        return await User.findById(username);
+        return await User.findOne({username });
     } catch (err) {
         throw err;
     }

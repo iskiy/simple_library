@@ -1,4 +1,6 @@
 const userDAO = require('../dao/userDAO');
+const User = require('../models/user');
+
 
 exports.register = async (req, res, next) => {
     const { username, password } = req.body;

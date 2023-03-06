@@ -10,12 +10,7 @@ function isAuthenticated(requiredRole) {
     };
 }
 
-exports.isAuthenticatedUser = (req, res, next) => {
-        isAuthenticated('default')
-        return next();
-};
+exports.isAuthenticatedUser = isAuthenticated('default');
 
-exports.isAuthenticatedAdmin = (req, res, next) => {
-    isAuthenticated('admin')
-    return next();
-};
+
+exports.isAuthenticatedAdmin = isAuthenticated('admin');
