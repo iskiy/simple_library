@@ -1,24 +1,13 @@
 const mongoose = require('mongoose');
-const userDAO = require('./dao/userDAO');
-const User = require('./models/user')
-const { MongoMemoryServer } = require('mongodb-memory-server');
 const session = require("express-session");
+const cors = require('cors');
 const express = require('express');
+
 const authRoutes = require('./routes/auth');
 const bookRoutes = require('./routes/book');
 const userRoutes = require('./routes/user');
 const MongoStore = require('connect-mongo');
-
-
-async function startInMemoryMongoDB() {
-    let mongoServer = await MongoMemoryServer.create();
-    const mongoUri = mongoServer.getUri();
-
-    await mongoose.connect(mongoUri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
-}
+const cookieParser = require('cookie-parser');
 
 
 
@@ -28,14 +17,16 @@ async function main(){
         useUnifiedTopology: true,
     });
 
+
     const server = express();
     server.use(express.json());
-
+    server.use(cookieParser());
+    server.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+    // server.use(cors());
     server.use(session({
         secret: 'secret',
         resave: false,
         saveUninitialized: true,
-        cookie: { maxAge: 86400000 },
         store: MongoStore.create({mongoUrl: mongoose.connection.client.s.url } )
     }));
 
@@ -43,7 +34,8 @@ async function main(){
     server.use('/books', bookRoutes);
     server.use('/user', userRoutes);
 
-    server.listen(3000, () => {
+
+    server.listen(8888, () => {
         console.log(`Server started`);
     });
 }

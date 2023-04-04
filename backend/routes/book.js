@@ -5,12 +5,12 @@ const { isAuthenticatedUser,isAuthenticatedAdmin } = require('../middleware/auth
 
 bookRoutes.get('/', isAuthenticatedUser, getAllBooks);
 
-bookRoutes.get('/:id', isAuthenticatedUser, getBookById);
+bookRoutes.get('/:bookID', isAuthenticatedUser, getBookById);
 
 bookRoutes.post('/', isAuthenticatedAdmin, createBook);
 
-bookRoutes.put('/:id', isAuthenticatedAdmin, updateBook);
+bookRoutes.put('/:bookID', isAuthenticatedAdmin, updateBook);
 
-bookRoutes.delete('/:id', isAuthenticatedAdmin, deleteBook);
+bookRoutes.delete('/:bookID', isAuthenticatedAdmin, deleteBook);
 
 module.exports = bookRoutes;
